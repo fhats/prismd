@@ -19,8 +19,6 @@ def barfs_json(f):
         self.write(ret)
     return wrapper
 
-def memberwise_equals
-
 class LightsHandler(tornado.web.RequestHandler):
     """The main handler for requests to change the lights.
 
