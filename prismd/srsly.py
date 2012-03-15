@@ -36,8 +36,8 @@ def pack_light_data(n, rgbi):
 		raise OutOfRangeException
 
 	# Do some shiftery to truncate shit and pack it
-	start_r = START_PATTERN << 4 | rgbi['r']
-	g_b = rgbi['g'] << 4 | rgbi['b']
+	start_r = START_PATTERN | rgbi['r'] << 4
+	g_b = rgbi['b'] << 4 | rgbi['g']
 
 	return struct.pack("BBBB", start_r, g_b, rgbi['i'], n)
 
