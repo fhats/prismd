@@ -1,0 +1,16 @@
+This is prismd.
+
+This application has only one concern: change some mother-fuckin' lights.
+
+Issue POST requests to prismd with a JSON-formatted body like so:
+{
+	"data": [
+		{
+			"r": 125,     # the red component
+			"g": 126,     # the green component
+			"b": 221,     # the blue component
+			"i": 255      # the intensity component
+		},
+		# ... up to N lights
+	]
+}
