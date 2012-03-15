@@ -19,6 +19,8 @@ def barfs_json(f):
         self.write(ret)
     return wrapper
 
+def memberwise_equals
+
 class LightsHandler(tornado.web.RequestHandler):
     """The main handler for requests to change the lights.
 
@@ -60,6 +62,10 @@ class LightsHandler(tornado.web.RequestHandler):
 
     def set_light(self, idx, light):
         """Use our serial connection to set the RGBI of the light at index idx"""
+
+        # Don't set a light that doesn't need it
+        if self.application.settings["lights_state"][idx] == light:
+            return
 
         # synchronize our internal representation of the lights
         self.application.settings["lights_state"][idx] = light
