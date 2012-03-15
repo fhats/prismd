@@ -80,7 +80,7 @@ if __name__ == "__main__":
     parser.add_option("-p", "--port", dest="port", default=config.get("port", 8080), type=int, help="The port to listen on")
     parser.add_option("-x", "--grid-width", dest="grid_width", default=config.get("grid_width", 7), type=int, help="The grid width")
     parser.add_option("-y", "--grid-height", dest="grid_height", default=config.get("grid_height", 7), type=int, help="The grid height")
-    parser.add_option("-b", "--baud-rate", dest="baud_rate", default=config.get("baud_rate", 151200), type=int, help="Baud rate")
+    parser.add_option("-b", "--baud-rate", dest="baud_rate", default=config.get("baud_rate", 115200), type=int, help="Baud rate")
     parser.add_option("-s", "--serial-port", dest="serial_port", default=config.get("serial_port", 0), type=str, help="Serial port to open")
 
     (options, args) = parser.parse_args()
