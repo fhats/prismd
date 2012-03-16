@@ -132,6 +132,20 @@ class Cycler(LightsHandler):
             (rgb & 0xF))
 
 
+class Sequence(LightsHandler):
+    def get(self):
+        for n in xrange(49):
+            d = n % 3
+            rgb = {
+                'r': 15 if d == 0 else 0,
+                'g': 15 if d == 1 else 0,
+                'b': 15 if d == 2 else 0,
+                'i': 255
+            }
+            self.set_light(n, rgb)
+            time.sleep(0.5)
+
+
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
     config = yaml.load(config_file.read()) or {}
@@ -148,7 +162,7 @@ if __name__ == "__main__":
     # Make the settings object into something a bit nicer
     settings = dict((k,getattr(options, k)) for k in parser.defaults.keys())
     # Initialize the state of the lights
-    settings["lights_state"] = dict((str(n), {'r':0, 'g':0, 'b':0, 'i':0}) for n in xrange(settings['grid_width'] * settings['grid_height']))
+    settings["lights_state"] = dict((n, {'r':0, 'g':0, 'b':0, 'i':0}) for n in xrange(settings['grid_width'] * settings['grid_height']))
 
     # open our serial connection
     srl = serial.Serial(settings['serial_port'], settings["baud_rate"])
@@ -159,6 +173,7 @@ if __name__ == "__main__":
         (r"/random_pattern", RandomHandler),
         (r"/pretty_fader", PrettyFader),
         (r"/cycler", Cycler),
+        (r"/sequence", Sequence),
     ], **settings)
     application.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()
