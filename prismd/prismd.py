@@ -143,7 +143,9 @@ class Sequence(LightsHandler):
                 'i': 255
             }
             self.set_light(n, rgb)
-            time.sleep(0.5)
+            time.sleep(0.25)
+            self.set_light(n, {'r': 0, 'g': 0, 'b': 0, 'i': 0})
+            time.sleep(0.25)
 
 
 if __name__ == "__main__":
