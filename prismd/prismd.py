@@ -93,17 +93,17 @@ class PrettyFader(LightsHandler):
     def get(self):
         times = int(self.get_argument("times", default=1))
         for t in xrange(times):
-            for d in (xrange(16), reversed(xrange(16))):
+            for d in (xrange(32), reversed(xrange(32))):
                 for i in d:
                     for n in xrange(49):
                         #print "%d %d %d" % (t,i,n)
                         self.set_light(
                             n,
                             {
-                                'r': int(floor((n % 16) * (i / 15))),
-                                'g': int(floor(((n + 6) % 16) * (i / 15))),
-                                'b': int(floor(((n + 12) % 16) * (i / 15))),
-                                'i': 255
+                                'r': (n % 16),
+                                'g': ((n + 6) % 16),
+                                'b': ((n + 12) % 16),
+                                'i': i * 8
                             })
 
 
@@ -146,6 +146,15 @@ class Sequence(LightsHandler):
             time.sleep(0.5)
         for n in xrange(49):
             self.set_light(n, {'r': 0, 'g': 0, 'b': 0, 'i': 0})
+            time.sleep(0.5)
+
+
+class RGBFade(LightsHandler):
+    def get(self):
+        for n in xrange(49):
+            for d in (xrange(16), reversed(xrange(16)):
+                for i in xrange(16):
+                    self.set_light(n, {'r': i, 'g': 0, 'b': 0, 'i': 255})
             time.sleep(0.5)
 
 
