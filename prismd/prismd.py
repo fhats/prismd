@@ -198,7 +198,7 @@ class StripyHorse(LightsHandler):
         }
         for n in xrange(49):
             row = n // 7
-            self.set_line(n, buckets[row])
+            self.set_light(n, buckets[row])
 
 
 if __name__ == "__main__":
