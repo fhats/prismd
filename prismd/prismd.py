@@ -28,13 +28,13 @@ class LightsHandler(tornado.web.RequestHandler):
     Accepts a post argument called "data" with JSON of the form:
     {
         "lights": {
-            "0": {
+            0: {
                 "r": 0,
                 "g": 255,
                 "b": 122,
                 "i": 255,
             },
-            "1": {
+            1: {
                 "r": 255,
                 "g": 250,
                 "b": 100,
@@ -149,6 +149,58 @@ class Sequence(LightsHandler):
             time.sleep(0.5)
 
 
+class StripyHorse(LightsHandler):
+    def get(self):
+        buckets = {
+            0: {
+                'r': 255,
+                'g': 0,
+                'b': 0,
+                'i': 255
+            },
+            1: {
+                'r': 255,
+                'g': 255,
+                'b': 0,
+                'i': 255
+            },
+            2: {
+                'r': 255,
+                'g': 0,
+                'b': 255,
+                'i': 255
+            },
+            3: {
+                'r': 0,
+                'g': 255,
+                'b': 0,
+                'i': 255
+            },
+            4: {
+                'r': 0,
+                'g': 255,
+                'b': 255,
+                'i': 255
+            },
+            5: {
+                'r': 0,
+                'g': 0,
+                'b': 255,
+                'i': 255
+            },
+            6: {
+                'r': 255,
+                'g': 255,
+                'b': 255,
+                'i': 255
+            }
+
+        }
+        for n in xrange(49):
+            row = n // 7
+            self.set_line(n, buckets[row])
+
+
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
     config = yaml.load(config_file.read()) or {}
@@ -177,6 +229,7 @@ if __name__ == "__main__":
         (r"/pretty_fader", PrettyFader),
         (r"/cycler", Cycler),
         (r"/sequence", Sequence),
+        (r"/stripe", StripyHorse),
     ], **settings)
     application.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()
