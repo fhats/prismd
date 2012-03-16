@@ -239,6 +239,7 @@ if __name__ == "__main__":
         (r"/cycler", Cycler),
         (r"/sequence", Sequence),
         (r"/stripe", StripyHorse),
+        (r"/rgbfade", RGBFade),
     ], **settings)
     application.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()
