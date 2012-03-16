@@ -51,6 +51,6 @@ def write_light_cmd(srl, packed_cmd):
 
 	# find out how many bytes were read
 	#output = srl.readline()
-	logger.debug("Received line %s" % output)
-	bytes = int(output)
-	return bytes
+	#logger.debug("Received line %s" % output)
+	#bytes = int(output)
+	#return bytes
