@@ -72,10 +72,11 @@ def process_message(msg, srl):
     try:
         data = json.loads(msg)
     except Exception, e:
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        # return {
+        #     "status": "error",
+        #     "message": str(e)
+        # }
+        raise
 
     lights_data = data["lights"]
 
@@ -83,7 +84,7 @@ def process_message(msg, srl):
         print "Set light %s with %r" % (n, light)
         set_light(srl, int(n), light)
 
-    return {"status": "ok"}
+    #return {"status": "ok"}
 
 def set_light(srl, idx, light):
         """Use our serial connection to set the RGBI of the light at index idx"""
