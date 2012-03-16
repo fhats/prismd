@@ -3,6 +3,7 @@ import json
 import logging
 from optparse import OptionParser
 import random
+import time
 
 import serial
 import tornado.ioloop
@@ -75,10 +76,11 @@ class LightsHandler(tornado.web.RequestHandler):
 
 class RandomHandler(LightsHandler):
     def get(self):
-        for i in xrange(10):
+        for i in xrange(1000):
             self.write(str(i))
             for n in xrange(48):
                 self.set_light(n, {'r': random.randint(0,15), 'g': random.randint(0,15), 'b': random.randint(0,15), 'i':255})
+                time.sleep(0.1)
 
 
 if __name__ == "__main__":
