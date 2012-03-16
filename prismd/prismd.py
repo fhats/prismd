@@ -1,6 +1,7 @@
 import functools
 import json
 import logging
+from math import floor
 from optparse import OptionParser
 import random
 import time
@@ -79,28 +80,22 @@ class LightsHandler(tornado.web.RequestHandler):
 class RandomHandler(LightsHandler):
     def get(self):
         times = int(self.get_argument("times", default=1))
-        e_sleep = float(self.get_argument("e_sleep", default=1))
-        r_sleep = float(self.get_argument("r_sleep", default=1))
         for i in xrange(times):
             self.write(str(i))
             for n in xrange(49):
                 print i, n
                 self.set_light(n, {'r': random.randint(0,15), 'g': random.randint(0,15), 'b': random.randint(0,15), 'i':255})
-                time.sleep(e_sleep)
-            time.sleep(r_sleep)
         self.write("hi")
 
 
 class PrettyFader(LightsHandler):
     def get(self):
         times = int(self.get_argument("times", default=1))
-        e_sleep = float(self.get_argument("e_sleep", default=1))
-        r_sleep = float(self.get_argument("r_sleep", default=1))
         for t in xrange(times):
             for d in (xrange(32), reversed(xrange(32))):
                 for i in d:
                     for n in xrange(49):
-                        print "%d %d %d" % (t,i,n)
+                        #print "%d %d %d" % (t,i,n)
                         self.set_light(
                             n,
                             {
@@ -109,8 +104,30 @@ class PrettyFader(LightsHandler):
                                 'b': ((n + 12) % 16),
                                 'i': i * 8
                             })
-                        time.sleep(e_sleep)
-                    time.sleep(r_sleep)
+
+
+class Cycler(LightsHandler):
+    def get(self):
+        for i in xrange(4096):
+            for n in xrange(49):
+                c = (i + floor(n * (4096/49))) % 4096
+                rgb = self.rgbsplit(c)
+                # self.set_light(
+                #     n,
+                #     {
+                #         'r': rgb[0],
+                #         'g': rgb[1],
+                #         'b': rgb[2],
+                #         'i': 255
+                #     })
+                print "Set line %d to %d %d %d %d" % (n, rgb[0], rgb[1], rgb[2], 255)
+
+    def rgbsplit(self, rgb):
+        rgb = int(rgb)
+        return (
+            (rgb & 0xF00) >> 8,
+            (rgb & 0xF0) >> 4,
+            (rgb & 0xF))
 
 
 if __name__ == "__main__":
@@ -139,6 +156,7 @@ if __name__ == "__main__":
         (r"/", LightsHandler),
         (r"/random_pattern", RandomHandler),
         (r"/pretty_fader", PrettyFader),
+        (r"/cycler", Cycler),
     ], **settings)
     application.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()

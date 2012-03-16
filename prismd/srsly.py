@@ -9,6 +9,7 @@ START=0011"""
 import io
 import logging
 import struct # :(
+import time
 
 import serial # :( :(
 
@@ -44,10 +45,15 @@ def pack_light_data(n, rgbi):
 
 	return struct.pack("BBBB", start_r, g_b, rgbi['i'], n)
 
-def write_light_cmd(srl, packed_cmd):
+def write_light_cmd(srl, packed_cmd, sleep=0.0015):
+	"""Theoretical max is ~.0009?
+	.0015 to be safe."""
+
 	srl.write(packed_cmd)
 
 	srl.flush()
+
+	time.sleep(sleep)
 
 	# find out how many bytes were read
 	#output = srl.readline()
