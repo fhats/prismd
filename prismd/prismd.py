@@ -159,55 +159,72 @@ class RGBFade(LightsHandler):
 
 
 class StripyHorse(LightsHandler):
-    def get(self):
-        buckets = {
-            0: {
-                'r': 15,
-                'g': 0,
-                'b': 0,
-                'i': 255
-            },
-            1: {
-                'r': 15,
-                'g': 15,
-                'b': 0,
-                'i': 255
-            },
-            2: {
-                'r': 15,
-                'g': 0,
-                'b': 15,
-                'i': 255
-            },
-            3: {
-                'r': 0,
-                'g': 15,
-                'b': 0,
-                'i': 255
-            },
-            4: {
-                'r': 0,
-                'g': 15,
-                'b': 15,
-                'i': 255
-            },
-            5: {
-                'r': 0,
-                'g': 0,
-                'b': 15,
-                'i': 255
-            },
-            6: {
-                'r': 15,
-                'g': 15,
-                'b': 15,
-                'i': 255
-            }
-
+    buckets = {
+        0: {
+            'r': 15,
+            'g': 0,
+            'b': 0,
+            'i': 255
+        },
+        1: {
+            'r': 15,
+            'g': 15,
+            'b': 0,
+            'i': 255
+        },
+        2: {
+            'r': 15,
+            'g': 0,
+            'b': 15,
+            'i': 255
+        },
+        3: {
+            'r': 0,
+            'g': 15,
+            'b': 0,
+            'i': 255
+        },
+        4: {
+            'r': 0,
+            'g': 15,
+            'b': 15,
+            'i': 255
+        },
+        5: {
+            'r': 0,
+            'g': 0,
+            'b': 15,
+            'i': 255
+        },
+        6: {
+            'r': 15,
+            'g': 15,
+            'b': 15,
+            'i': 255
         }
+
+    }
+    def get(self):
         for n in xrange(49):
             row = n // 7
-            self.set_light(n, buckets[row])
+            self.set_light(n, self.buckets[row])
+
+
+class HorizontalStripyHorse(StripyHorse)
+    def get(self):
+        for n in xrange(49):
+            side = n % 2
+            row = n // 7
+            if side == 0:
+                self.set_light(n, self.buckets[row])
+            else:
+                diff = abs(row - 3)
+                sign = row - 3
+                if sign > 0:
+                    row = 3 - diff
+                else:
+                    row = diff - 3
+                self.set_light(n, self.buckets[row])
 
 
 if __name__ == "__main__":
