@@ -93,17 +93,17 @@ class PrettyFader(LightsHandler):
     def get(self):
         times = int(self.get_argument("times", default=1))
         for t in xrange(times):
-            for d in (xrange(32), reversed(xrange(32))):
+            for d in (xrange(16), reversed(xrange(16))):
                 for i in d:
                     for n in xrange(49):
                         #print "%d %d %d" % (t,i,n)
                         self.set_light(
                             n,
                             {
-                                'r': (n % 16),
-                                'g': ((n + 6) % 16),
-                                'b': ((n + 12) % 16),
-                                'i': i * 8
+                                'r': (n % 16) * (i // 16),
+                                'g': ((n + 6) % 16) * (i // 16),
+                                'b': ((n + 12) % 16) * (i // 16),
+                                'i': 255
                             })
 
 
