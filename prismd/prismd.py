@@ -214,13 +214,11 @@ class HorizontalStripyHorse(StripyHorse):
     def get(self):
         rev = dict((k,v) for k,v in zip(xrange(7), reversed(xrange(7))))
         for n in xrange(49):
-            side = n % 2
             row = n // 7
-            if side == 0:
-                self.set_light(n, self.buckets[row])
-            else:
-                row = rev[row]
-                self.set_light(n, self.buckets[row])
+            self.set_light(n, self.buckets[row])
+            # else:
+            #     row = rev[row]
+            #     self.set_light(n, self.buckets[row])
 
 
 if __name__ == "__main__":
