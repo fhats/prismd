@@ -45,7 +45,7 @@ def pack_light_data(n, rgbi):
 
 	return struct.pack("BBBB", start_r, g_b, rgbi['i'], n)
 
-def write_light_cmd(srl, packed_cmd, sleep=0.0015):
+def write_light_cmd(srl, packed_cmd, sleep=0.0009):
 	"""Theoretical max is ~.0009?
 	.0015 to be safe."""
 
