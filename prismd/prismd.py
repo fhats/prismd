@@ -153,7 +153,7 @@ class RGBFade(LightsHandler):
     def get(self):
         for n in xrange(49):
             for d in (xrange(16), reversed(xrange(16))):
-                for i in xrange(16):
+                for i in d:
                     self.set_light(n, {'r': i, 'g': 0, 'b': 0, 'i': 255})
                     time.sleep(0.05)
             time.sleep(0.1)
