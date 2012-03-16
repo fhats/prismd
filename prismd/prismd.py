@@ -138,6 +138,5 @@ if __name__ == "__main__":
 
         while True:
             msg = socket.recv()
-            print "Got message %s" % msg
             output = process_message(msg, srl, sleep=settings["refresh_rate"])
             socket.send(json.dumps(output))
