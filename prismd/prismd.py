@@ -47,7 +47,7 @@ class LightsHandler(LightsBase):
     """
 
     @barfs_json
-    def get(self):
+    def post(self):
         """Takes data and sets the lights correspondingly."""
 
         data = json.loads(self.get_argument("data"))
