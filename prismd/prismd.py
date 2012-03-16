@@ -2,6 +2,7 @@ import functools
 import json
 import logging
 from optparse import OptionParser
+import random
 
 import serial
 import tornado.ioloop
@@ -72,6 +73,14 @@ class LightsHandler(tornado.web.RequestHandler):
         srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
 
 
+class RandomHandler(LightsHandler):
+    def get(self):
+        for i in xrange(10):
+            self.write(str(i))
+            for n in xrange(48):
+                self.set_light(n, {'r': random.randint(0,15), 'g': random.randint(0,15), 'b': random.randint(0,15), 'i':255})
+
+
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
     config = yaml.load(config_file.read()) or {}
@@ -95,7 +104,8 @@ if __name__ == "__main__":
     settings["serial_connection"] = srl
 
     application = tornado.web.Application([
-        (r"/", LightsHandler)
+        (r"/", LightsHandler),
+        (r"/random_pattern", RandomHandler),
     ], **settings)
     application.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()
