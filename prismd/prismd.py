@@ -89,6 +89,25 @@ class RandomHandler(LightsHandler):
         self.write("hi")
 
 
+class PrettyFader(LightsHandler):
+    def get(self):
+        e_sleep = float(self.get_argument("e_sleep", default=1))
+        r_sleep = float(self.get_argument("r_sleep", default=1))
+        for d in (xrange(256), reversed(xrange(256))):
+            for i in d:
+                for n in xrange(49):
+                    self.set_light(
+                        n,
+                        {
+                            'r': (n % 16),
+                            'g': ((n + 6) % 16),
+                            'b': ((n + 12) % 16),
+                            'i': i
+                        })
+                    time.sleep(e_sleep)
+                time.sleep(r_sleep)
+
+
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
     config = yaml.load(config_file.read()) or {}
@@ -114,6 +133,7 @@ if __name__ == "__main__":
     application = tornado.web.Application([
         (r"/", LightsHandler),
         (r"/random_pattern", RandomHandler),
+        (r"/pretty_fader", PrettyFader),
     ], **settings)
     application.listen(settings["port"])
     tornado.ioloop.IOLoop.instance().start()
