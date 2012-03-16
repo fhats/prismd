@@ -15,6 +15,7 @@ from light_base import LightsBase
 import patterns.test
 
 logger = logging.getLogger("prismd")
+logger.setLevel(logging.DEBUG)
 
 def barfs_json(f):
     @functools.wraps(f)

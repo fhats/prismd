@@ -23,4 +23,4 @@ Issue POST requests to prismd with a JSON-formatted body like so:
 
 
 If you want to test, you need some way of making a fake serial port. You can use socat to do this. Download and install socat (./configure && make && sudo make install),
-then run socat PTY,link=$HOME/COM1 PTY,link=$HOME/COM2 . python prismd.py -s $HOME/COM1
+then run socat -d -d pty,raw,echo=0 pty,raw,echo=0 . socat will print the names of the serial ports it creates. Pass one of them to prismd.py with -s
