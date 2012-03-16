@@ -80,7 +80,8 @@ class RandomHandler(LightsHandler):
             self.write(str(i))
             for n in xrange(48):
                 self.set_light(n, {'r': random.randint(0,15), 'g': random.randint(0,15), 'b': random.randint(0,15), 'i':255})
-                time.sleep(0.1)
+        time.sleep(1)
+
 
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
