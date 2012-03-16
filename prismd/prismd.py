@@ -140,5 +140,4 @@ if __name__ == "__main__":
             msg = socket.recv()
             print "Got message %s" % msg
             output = process_message(msg, srl)
-            print "Sending %s" % output
             socket.send(json.dumps(output))
