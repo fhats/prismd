@@ -65,7 +65,7 @@ class LightsHandler(LightsBase):
         return self.application.settings['lights_state']
 
 
-def process_message(msg, srl):
+def process_message(msg, srl, sleep=0.0012):
     """Processes a message received from a client.
 
     Returns a dict."""
@@ -81,15 +81,15 @@ def process_message(msg, srl):
     lights_data = data["lights"]
 
     for n, light in lights_data.iteritems():
-        set_light(srl, int(n), light)
+        set_light(srl, int(n), light, sleep)
 
     #return {"status": "ok"}
 
-def set_light(srl, idx, light):
+def set_light(srl, idx, light, sleep=0.0012):
         """Use our serial connection to set the RGBI of the light at index idx"""
 
         packed_cmd = srsly.pack_light_data(idx, light)
-        srsly.write_light_cmd(srl, packed_cmd)
+        srsly.write_light_cmd(srl, packed_cmd, sleep)
 
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
@@ -101,6 +101,7 @@ if __name__ == "__main__":
     parser.add_option("-y", "--grid-height", dest="grid_height", default=config.get("grid_height", 7), type=int, help="The grid height")
     parser.add_option("-b", "--baud-rate", dest="baud_rate", default=config.get("baud_rate", 115200), type=int, help="Baud rate")
     parser.add_option("-s", "--serial-port", dest="serial_port", default=config.get("serial_port", 0), type=str, help="Serial port to open")
+    parser.add_option("-r", "--refresh", dest="refresh_rate", default=0.0012, type=float)
     parser.add_option("--testing", dest="testing", action="store_true", help="Whether or not to start the Tornado web server")
 
     (options, args) = parser.parse_args()
@@ -138,5 +139,5 @@ if __name__ == "__main__":
         while True:
             msg = socket.recv()
             print "Got message %s" % msg
-            output = process_message(msg, srl)
+            output = process_message(msg, srl, sleep=settings["refresh_rate"])
             socket.send(json.dumps(output))

@@ -14,5 +14,8 @@ class LightsBase(tornado.web.RequestHandler):
         self.application.settings["lights_state"][idx] = light
 
         packed_cmd = srsly.pack_light_data(idx, light)
-        srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
+        srsly.write_light_cmd(
+            self.application.settings['serial_connection'],
+            packed_cmd,
+            sleep=self.application.settings["refresh_rate"])
 
