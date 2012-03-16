@@ -76,7 +76,7 @@ class LightsHandler(tornado.web.RequestHandler):
 
 class RandomHandler(LightsHandler):
     def get(self):
-        for i in xrange(1000):
+        for i in xrange(100):
             self.write(str(i))
             for n in xrange(48):
                 self.set_light(n, {'r': random.randint(0,15), 'g': random.randint(0,15), 'b': random.randint(0,15), 'i':255})
