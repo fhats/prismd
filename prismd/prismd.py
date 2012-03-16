@@ -61,21 +61,6 @@ class LightsHandler(LightsBase):
 
         return self.application.settings['lights_state']
 
-    def set_light(self, idx, light):
-        """Use our serial connection to set the RGBI of the light at index idx"""
-
-        # Don't set a light that doesn't need its
-        if self.application.settings["lights_state"][idx] == light:
-           return
-
-        # synchronize our internal representation of the lights
-        self.application.settings["lights_state"][idx] = light
-
-        packed_cmd = srsly.pack_light_data(idx, light)
-        srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
-        #if bytes_written != 4:
-        #    logging.warn("I read %d bytes and expected 4." % bytes_written)
-
 
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
