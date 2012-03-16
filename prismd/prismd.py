@@ -97,7 +97,7 @@ class PrettyFader(LightsHandler):
         e_sleep = float(self.get_argument("e_sleep", default=1))
         r_sleep = float(self.get_argument("r_sleep", default=1))
         for t in xrange(times):
-            for d in (xrange(256), reversed(xrange(256))):
+            for d in (xrange(32), reversed(xrange(32))):
                 for i in d:
                     for n in xrange(49):
                         print "%d %d %d" % (t,i,n)
@@ -107,7 +107,7 @@ class PrettyFader(LightsHandler):
                                 'r': (n % 16),
                                 'g': ((n + 6) % 16),
                                 'b': ((n + 12) % 16),
-                                'i': i
+                                'i': i * 8
                             })
                         time.sleep(e_sleep)
                     time.sleep(r_sleep)
