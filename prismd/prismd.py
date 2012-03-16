@@ -133,7 +133,7 @@ if __name__ == "__main__":
         # TCP, SRVR, REQUEST?REPLY
         context = zmq.Context()
         socket = context.socket(zmq.REP)
-        socket.bind("tcp://127.0.0.1:%d" % settings["port"])
+        socket.bind("tcp://0.0.0.0:%d" % settings["port"])
 
         while True:
             msg = socket.recv()
