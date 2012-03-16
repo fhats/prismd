@@ -6,6 +6,7 @@ if n=63, command addresses all lights.
 
 START=0011"""
 
+import io
 import struct # :(
 
 import serial # :( :(
@@ -43,6 +44,8 @@ def pack_light_data(n, rgbi):
 
 def write_light_cmd(srl, packed_cmd):
 	srl.write(packed_cmd)
+
+	srl.flush()
 
 	# find out how many bytes were read
 	output = srl.readline()

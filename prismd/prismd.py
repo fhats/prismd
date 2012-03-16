@@ -100,6 +100,7 @@ class PrettyFader(LightsHandler):
             for d in (xrange(256), reversed(xrange(256))):
                 for i in d:
                     for n in xrange(49):
+                        print "%d %d %d" % (t,i,n)
                         self.set_light(
                             n,
                             {
