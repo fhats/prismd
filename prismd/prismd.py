@@ -64,8 +64,8 @@ class LightsHandler(tornado.web.RequestHandler):
     def set_light(self, idx, light):
         """Use our serial connection to set the RGBI of the light at index idx"""
 
-        # Don't set a light that doesn't need it
-        #if self.application.settings["lights_state"][idx] == light:
+        # Don't set a light that doesn't need its
+        # if self.application.settings["lights_state"][idx] == light:
         #    return
 
         # synchronize our internal representation of the lights
@@ -86,6 +86,8 @@ class RandomHandler(LightsHandler):
                 print i, n
                 self.set_light(n, {'r': random.randint(0,15), 'g': random.randint(0,15), 'b': random.randint(0,15), 'i':255})
         self.write("hi")
+
+        return self.application.settings['lights_state']
 
 
 class PrettyFader(LightsHandler):
@@ -112,15 +114,16 @@ class Cycler(LightsHandler):
             for n in xrange(49):
                 c = (i + floor(n * (4096/49))) % 4096
                 rgb = self.rgbsplit(c)
-                # self.set_light(
-                #     n,
-                #     {
-                #         'r': rgb[0],
-                #         'g': rgb[1],
-                #         'b': rgb[2],
-                #         'i': 255
-                #     })
+                self.set_light(
+                    n,
+                    {
+                        'r': rgb[0],
+                        'g': rgb[1],
+                        'b': rgb[2],
+                        'i': 255
+                    })
                 print "Set line %d to %d %d %d %d" % (n, rgb[0], rgb[1], rgb[2], 255)
+        return self.application.settings['lights_state']
 
     def rgbsplit(self, rgb):
         rgb = int(rgb)
