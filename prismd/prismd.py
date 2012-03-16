@@ -214,7 +214,7 @@ class HorizontalStripyHorse(StripyHorse):
     def get(self):
         rev = dict((k,v) for k,v in zip(xrange(7), reversed(xrange(7))))
         for n in xrange(49):
-            row = n // 7
+            row = n % 7
             self.set_light(n, self.buckets[row])
             # else:
             #     row = rev[row]
