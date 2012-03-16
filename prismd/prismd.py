@@ -210,7 +210,7 @@ class StripyHorse(LightsHandler):
             self.set_light(n, self.buckets[row])
 
 
-class HorizontalStripyHorse(StripyHorse)
+class HorizontalStripyHorse(StripyHorse):
     def get(self):
         for n in xrange(49):
             side = n % 2
@@ -256,6 +256,7 @@ if __name__ == "__main__":
         (r"/cycler", Cycler),
         (r"/sequence", Sequence),
         (r"/stripe", StripyHorse),
+        (r"/hstripe", HorizontalStripyHorse),
         (r"/rgbfade", RGBFade),
     ], **settings)
     application.listen(settings["port"])
