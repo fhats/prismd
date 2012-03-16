@@ -1,3 +1,4 @@
 pyserial>=2.6
 tornado>=2.2
 pyyaml
+pyzmq

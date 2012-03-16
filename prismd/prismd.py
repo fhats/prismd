@@ -10,9 +10,11 @@ import serial
 import tornado.ioloop
 import tornado.web
 import yaml
+import zmq
 
 from light_base import LightsBase
 import patterns.test
+import srsly
 
 logger = logging.getLogger("prismd")
 logger.setLevel(logging.DEBUG)
@@ -30,13 +32,13 @@ class LightsHandler(LightsBase):
     Accepts a post argument called "data" with JSON of the form:
     {
         "lights": {
-            0: {
+            "0": {
                 "r": 0-15,
                 "g": 0-15,
                 "b": 0-15,
                 "i": 0-255,
             },
-            1: {
+            "1": {
                 "r": 0-15,
                 "g": 0-15,
                 "b": 0-15,
@@ -58,10 +60,36 @@ class LightsHandler(LightsBase):
         lights_data = data["lights"]
 
         for n, light in lights_data.iteritems():
-            self.set_light(n, light)
+            self.set_light(int(n), light)
 
         return self.application.settings['lights_state']
 
+
+def process_message(msg, srl):
+    """Processes a message received from a client.
+
+    Returns a dict."""
+    try:
+        data = json.loads(msg)
+    except Exception, e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+    lights_data = data["lights"]
+
+    for n, light in lights_data.iteritems():
+        print "Set light %s with %r" % (n, light)
+        set_light(srl, int(n), light)
+
+    return {"status": "ok"}
+
+def set_light(srl, idx, light):
+        """Use our serial connection to set the RGBI of the light at index idx"""
+
+        packed_cmd = srsly.pack_light_data(idx, light)
+        srsly.write_light_cmd(srl, packed_cmd)
 
 if __name__ == "__main__":
     config_file = open("prismd.yaml")
@@ -73,6 +101,7 @@ if __name__ == "__main__":
     parser.add_option("-y", "--grid-height", dest="grid_height", default=config.get("grid_height", 7), type=int, help="The grid height")
     parser.add_option("-b", "--baud-rate", dest="baud_rate", default=config.get("baud_rate", 115200), type=int, help="Baud rate")
     parser.add_option("-s", "--serial-port", dest="serial_port", default=config.get("serial_port", 0), type=str, help="Serial port to open")
+    parser.add_option("--testing", dest="testing", action="store_true", help="Whether or not to start the Tornado web server")
 
     (options, args) = parser.parse_args()
 
@@ -85,15 +114,30 @@ if __name__ == "__main__":
     srl = serial.Serial(settings['serial_port'], settings["baud_rate"])
     settings["serial_connection"] = srl
 
-    application = tornado.web.Application([
-        (r"/", LightsHandler),
-        (r"/test/random_pattern", patterns.test.RandomHandler),
-        (r"/test/pretty_fader", patterns.test.PrettyFader),
-        (r"/test/cycler", patterns.test.Cycler),
-        (r"/test/sequence", patterns.test.Sequence),
-        (r"/test/stripe", patterns.test.StripyHorse),
-        (r"/test/hstripe", patterns.test.HorizontalStripyHorse),
-        (r"/test/rgbfade", patterns.test.RGBFade),
-    ], **settings)
-    application.listen(settings["port"])
-    tornado.ioloop.IOLoop.instance().start()
+    if options.testing:
+        application = tornado.web.Application([
+            (r"/", LightsHandler),
+            (r"/test/random_pattern", patterns.test.RandomHandler),
+            (r"/test/pretty_fader", patterns.test.PrettyFader),
+            (r"/test/cycler", patterns.test.Cycler),
+            (r"/test/sequence", patterns.test.Sequence),
+            (r"/test/stripe", patterns.test.StripyHorse),
+            (r"/test/hstripe", patterns.test.HorizontalStripyHorse),
+            (r"/test/rgbfade", patterns.test.RGBFade),
+        ], **settings)
+        application.listen(settings["port"])
+        tornado.ioloop.IOLoop.instance().start()
+
+    else:
+        # ZMQ
+        # TCP, SRVR, REQUEST?REPLY
+        context = zmq.Context()
+        socket = context.socket(zmq.REP)
+        socket.bind("tcp://127.0.0.1:%d" % settings["port"])
+
+        while True:
+            msg = socket.recv()
+            print "Got message %s" % msg
+            output = process_message(msg, srl)
+            print "Sending %s" % output
+            socket.send(json.dumps(output))

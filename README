@@ -5,13 +5,13 @@ This application has only one concern: change some mother-fuckin' lights.
 Issue POST requests to prismd with a JSON-formatted body like so:
 {
         "lights": {
-            0: {
+            "0": {
                 "r": 0-15,
                 "g": 0-15,
                 "b": 0-15,
                 "i": 0-255,
             },
-            1: {
+            "1": {
                 "r": 0-15,
                 "g": 0-15,
                 "b": 0-15,
