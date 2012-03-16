@@ -62,8 +62,8 @@ class LightsHandler(tornado.web.RequestHandler):
         """Use our serial connection to set the RGBI of the light at index idx"""
 
         # Don't set a light that doesn't need it
-        if self.application.settings["lights_state"][idx] == light:
-            return
+        #if self.application.settings["lights_state"][idx] == light:
+        #    return
 
         # synchronize our internal representation of the lights
         self.application.settings["lights_state"][idx] = light
