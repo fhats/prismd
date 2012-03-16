@@ -48,6 +48,6 @@ def write_light_cmd(srl, packed_cmd):
 	srl.flush()
 
 	# find out how many bytes were read
-	output = srl.readline()
+	output = srl.readline(size=2)
 	bytes = int(output)
 	return bytes
