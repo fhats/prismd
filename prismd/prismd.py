@@ -100,9 +100,9 @@ class PrettyFader(LightsHandler):
                         self.set_light(
                             n,
                             {
-                                'r': floor((n % 16) * (i / 15)),
-                                'g': floor(((n + 6) % 16) * (i / 15)),
-                                'b': floor(((n + 12) % 16) * (i / 15)),
+                                'r': int(floor((n % 16) * (i / 15))),
+                                'g': int(floor(((n + 6) % 16) * (i / 15))),
+                                'b': int(floor(((n + 12) % 16) * (i / 15))),
                                 'i': 255
                             })
 
