@@ -81,7 +81,6 @@ def process_message(msg, srl):
     lights_data = data["lights"]
 
     for n, light in lights_data.iteritems():
-        print "Set light %s with %r" % (n, light)
         set_light(srl, int(n), light)
 
     #return {"status": "ok"}
