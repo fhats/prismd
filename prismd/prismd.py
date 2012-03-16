@@ -77,8 +77,8 @@ class LightsHandler(tornado.web.RequestHandler):
 class RandomHandler(LightsHandler):
     def get(self):
         times = int(self.get_argument("times", default=1))
-        e_sleep = int(self.get_argument("e_sleep", default=1))
-        r_sleep = int(self.get_argument("r_sleep", default=1))
+        e_sleep = float(self.get_argument("e_sleep", default=1))
+        r_sleep = float(self.get_argument("r_sleep", default=1))
         for i in xrange(times):
             self.write(str(i))
             for n in xrange(49):
