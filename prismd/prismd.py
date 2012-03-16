@@ -71,7 +71,9 @@ class LightsHandler(tornado.web.RequestHandler):
         self.application.settings["lights_state"][idx] = light
 
         packed_cmd = srsly.pack_light_data(idx, light)
-        srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
+        bytes_written = srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
+        if bytes_written != 4:
+            logging.warn("I read %d bytes and expected 4." % bytes_written)
 
 
 class RandomHandler(LightsHandler):
@@ -91,21 +93,23 @@ class RandomHandler(LightsHandler):
 
 class PrettyFader(LightsHandler):
     def get(self):
+        times = int(self.get_argument("times", default=1))
         e_sleep = float(self.get_argument("e_sleep", default=1))
         r_sleep = float(self.get_argument("r_sleep", default=1))
-        for d in (xrange(256), reversed(xrange(256))):
-            for i in d:
-                for n in xrange(49):
-                    self.set_light(
-                        n,
-                        {
-                            'r': (n % 16),
-                            'g': ((n + 6) % 16),
-                            'b': ((n + 12) % 16),
-                            'i': i
-                        })
-                    time.sleep(e_sleep)
-                time.sleep(r_sleep)
+        for t in xrange(times):
+            for d in (xrange(256), reversed(xrange(256))):
+                for i in d:
+                    for n in xrange(49):
+                        self.set_light(
+                            n,
+                            {
+                                'r': (n % 16),
+                                'g': ((n + 6) % 16),
+                                'b': ((n + 12) % 16),
+                                'i': i
+                            })
+                        time.sleep(e_sleep)
+                    time.sleep(r_sleep)
 
 
 if __name__ == "__main__":

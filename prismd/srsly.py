@@ -43,3 +43,8 @@ def pack_light_data(n, rgbi):
 
 def write_light_cmd(srl, packed_cmd):
 	srl.write(packed_cmd)
+
+	# find out how many bytes were read
+	output = srl.readline()
+	bytes = int(output)
+	return bytes
