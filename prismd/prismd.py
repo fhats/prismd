@@ -212,18 +212,14 @@ class StripyHorse(LightsHandler):
 
 class HorizontalStripyHorse(StripyHorse):
     def get(self):
+        rev = dict((k,v) for k,v in zip(xrange(7), reversed(xrange(7))))
         for n in xrange(49):
             side = n % 2
             row = n // 7
             if side == 0:
                 self.set_light(n, self.buckets[row])
             else:
-                diff = abs(row - 3)
-                sign = row - 3
-                if sign > 0:
-                    row = 3 - diff
-                else:
-                    row = diff - 3
+                row = rev[row]
                 self.set_light(n, self.buckets[row])
 
 
