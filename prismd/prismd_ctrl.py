@@ -1,3 +1,5 @@
+from itertools import cycle
+from math import floor
 import json
 from optparse import OptionParser
 import random
@@ -91,10 +93,17 @@ class ColorFader(PrismdController):
 
 class SoloHandler(PrismdController):
     def do_solo(self):
-        pass
+        tail = 5
+        for n in xrange(49 + tail + 1):
+            lights = {}
+            for i in xrange(49):
+                lights[i] = {'r': 0, 'g': 0, 'b': 0, 'i': 255}
+            for i in [k for k in range(n-tail, n) if k >= 0]:
+                lights[i] = {'r': 0, 'g': 0, 'b': int(floor((15/tail)*(n-i))), 'i': int(floor((255/tail) * (n-i)))}
+            self.change_lights(lights)
 
     def get(self):
-        pass
+        self.do_solo()
 
 class MapHandler(PrismdController):
     crap_map = [
@@ -179,13 +188,45 @@ class YelpHandler(MapHandler):
     def get(self):
         self.do_yelp()
 
-class ShowOffHandler(ColorFader, RandomHandler, YelpHandler):
+class RainbowLinesHandler(PrismdController):
+    rainbow = [
+                {'r': 15, 'g': 0, 'b': 0, 'i': 255},
+                {'r': 15, 'g': 15, 'b': 0, 'i': 255},
+                {'r': 15, 'g': 0, 'b': 15, 'i': 255},
+                {'r': 0, 'g': 15, 'b': 0, 'i': 255},
+                {'r': 0, 'g': 15, 'b': 15, 'i': 255},
+                {'r': 0, 'g': 0, 'b': 15, 'i': 255},
+                {'r': 15, 'g': 15, 'b': 15, 'i': 255}]
+
+    def do_rainbow_lines(self, times, sleep=0):
+        for i in xrange(times):
+            r_cycler = cycle(self.rainbow)
+            for _ in xrange(i):
+                r_cycler.next()
+            lights = {}
+            buckets = dict((k,v) for k,v in zip(xrange(7), r_cycler))
+            for n in xrange(49):
+                b = n // 7
+                lights[n] = buckets[b]
+            self.change_lights(lights)
+            time.sleep(sleep)
+
+    def get(self):
+        times = int(self.get_argument("times", 7))
+        sleep = float(self.get_argument("sleep", 0.5))
+
+        self.do_rainbow_lines(times, sleep)
+
+class ShowOffHandler(ColorFader, RandomHandler, YelpHandler, SoloHandler, RainbowLinesHandler):
     def get(self):
         times = int(self.get_argument("times", 1))
         for i in xrange(times):
             self.do_yelp()
             self.do_random(50)
             self.do_color_fader(1)
+            self.do_solo()
+            self.do_rainbow_lines(10)
+
 
 if __name__ == "__main__":
     parser = OptionParser()
@@ -204,7 +245,9 @@ if __name__ == "__main__":
         (r"/flash", FlashHandler),
         (r"/random", RandomHandler),
         (r"/fader", ColorFader),
-        (r"/showoff", ShowOffHandler)
+        (r"/showoff", ShowOffHandler),
+        (r"/solo", SoloHandler),
+        (r"/rainbow", RainbowLinesHandler)
     ], **settings)
     application.listen(9001)
     tornado.ioloop.IOLoop.instance().start()
