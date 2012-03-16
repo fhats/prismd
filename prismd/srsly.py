@@ -7,6 +7,7 @@ if n=63, command addresses all lights.
 START=0011"""
 
 import io
+import logging
 import struct # :(
 
 import serial # :( :(
