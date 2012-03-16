@@ -71,9 +71,9 @@ class LightsHandler(tornado.web.RequestHandler):
         self.application.settings["lights_state"][idx] = light
 
         packed_cmd = srsly.pack_light_data(idx, light)
-        bytes_written = srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
-        if bytes_written != 4:
-            logging.warn("I read %d bytes and expected 4." % bytes_written)
+        srsly.write_light_cmd(self.application.settings['serial_connection'], packed_cmd)
+        #if bytes_written != 4:
+        #    logging.warn("I read %d bytes and expected 4." % bytes_written)
 
 
 class RandomHandler(LightsHandler):
